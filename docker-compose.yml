@@ -13,7 +13,7 @@ services:
     container_name: postgres
     hostname: postgres
     ports:
-      -${DATABASE_PORT}:{DATABASE_PORT}
+      - ${DATABASE_PORT}:${DATABASE_PORT}
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
