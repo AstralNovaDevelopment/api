@@ -1,4 +1,4 @@
-import { ExecutionContext, ForbiddenException } from '@nestjs/common';
+import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 export default class DiscordGuard extends AuthGuard('discord') {
@@ -9,9 +9,7 @@ export default class DiscordGuard extends AuthGuard('discord') {
       await super.logIn(request);
       return result;
     } catch (e) {
-      if (e instanceof Error) {
-        throw new ForbiddenException();
-      }
+      throw new UnauthorizedException();
     }
   }
 }
