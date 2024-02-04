@@ -4,17 +4,24 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { validateEnvironmentSchema } from './util/validate.schema';
 import { PassportModule } from '@nestjs/passport';
-import { SessionSerializer } from './authentication/SessionSerializer';
+import { json, urlencoded } from 'express';
 import * as cors from 'cors';
 import * as sessions from 'express-session';
 import * as passport from 'passport';
-import { PrismaClient } from '@prisma/client';
-import { PrismaSessionStore } from '@quixo3/prisma-session-store';
+import RedisStore from 'connect-redis';
+import MicroservicesModule from './microservices/microservice.module';
+import RedisService from './microservices/redis.microservice';
+
 
 @Module({
   imports: [
     DiscordModule,
     AuthenticationModule,
+    {
+      module: MicroservicesModule,
+      providers: [MicroservicesModule],
+      global: true,
+    },
     ConfigModule.forRoot({
       cache: true,
       isGlobal: true,
@@ -23,13 +30,15 @@ import { PrismaSessionStore } from '@quixo3/prisma-session-store';
     PassportModule.register({ session: true }),
   ],
   controllers: [],
-  providers: [SessionSerializer],
+  providers: []
 })
 export class AppModule implements NestModule {
-  constructor(@Inject(ConfigService) private config: ConfigService) {}
-  configure(consumer: MiddlewareConsumer) {
+  constructor(@Inject(ConfigService) private config: ConfigService, @Inject(RedisService) private redis: RedisService) {}
+  async configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(
+        json(),
+        urlencoded({ extended: false }),
         cors({
           credentials: true,
           preflightContinue: true,
@@ -38,10 +47,8 @@ export class AppModule implements NestModule {
           cookie: {
             maxAge: 86400000,
           },
-          store: new PrismaSessionStore(new PrismaClient(), {
-            checkPeriod: 2 * 60 * 1000, //ms
-            dbRecordIdIsSessionId: true,
-            dbRecordIdFunction: undefined,
+          store: new RedisStore({
+            client: this.redis.getClient(),
           }),
           secret: this.config.get('SESSION_SECRET'),
           resave: false,
