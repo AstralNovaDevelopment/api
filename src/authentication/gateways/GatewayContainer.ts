@@ -4,8 +4,8 @@ import { UserLoginType } from "@prisma/client";
 import { PrismaService } from "src/microservices/database.microservice";
 import RedisService from "src/microservices/redis.microservice";
 import AuthenticationGateway from "./authentication.gateway";
-import DiscordAuthenticationGateway from "./DiscordAuthenticationGateway";
-import JWTAuthenticationGateway from "./JWTAuthenticationGateway";
+import DiscordAuthenticationGateway from "./discord.gateway";
+import JWTAuthenticationGateway from "./jwt.gateway";
 
 @Injectable()
 export default class GatewayContainer {

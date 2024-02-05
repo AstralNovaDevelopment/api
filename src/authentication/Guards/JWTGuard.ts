@@ -1,7 +1,7 @@
 import {  CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { Request } from "express";
 import  { AuthGuard } from "@nestjs/passport"
-import GatewayContainer  from "../gateways/GatewayContainer";
+import GatewayContainer  from "../gateways/gatewayContainer";
 
 @Injectable()
 export class ValidateJWTCodeGuard implements CanActivate {

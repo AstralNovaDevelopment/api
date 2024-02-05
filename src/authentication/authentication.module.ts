@@ -7,7 +7,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import MicroservicesModule from 'src/microservices/microservice.module';
 import { SessionSerializer } from './strategies/SessionSerializer';
 import { JwtStrategy } from './strategies/JwtStrategy';
-import GatewayContainer from './gateways/GatewayContainer';
+import GatewayContainer from './gateways/gatewayContainer';
 
 @Module({
   imports: [

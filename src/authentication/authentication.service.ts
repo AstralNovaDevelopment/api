@@ -1,8 +1,8 @@
 import {  Inject, Injectable } from '@nestjs/common';
 import AuthenticationGateway from './gateways/authentication.gateway';
 import {  User, UserLoginType } from '@prisma/client';
-import GatewayContainer from './gateways/GatewayContainer';
-import { Payload } from './gateways/JWTAuthenticationGateway';
+import GatewayContainer from './gateways/gatewayContainer';
+import { Payload } from './gateways/jwt.gateway';
 
 @Injectable()
 export default class AuthenticationService {
