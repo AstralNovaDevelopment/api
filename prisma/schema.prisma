@@ -17,9 +17,15 @@ model User {
   avatar    String        @db.Text
   fetchedAt DateTime      @default(now()) @db.Timestamp()
   tokenId   String        @unique
+  role      Role          @default(MEMBER)
 }
 
 enum UserLoginType {
   DISCORD
   JWT
+}
+
+enum Role {
+  ADMIN
+  MEMBER
 }
