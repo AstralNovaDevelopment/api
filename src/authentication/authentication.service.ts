@@ -7,7 +7,7 @@ import { Payload, Token } from './gateways/jwt.gateway';
 export default class AuthenticationService {
   constructor(@Inject(GatewayContainer) private gateway: GatewayContainer) {}
 
-  public async verifyUser(type: UserLoginType, user: User) {
+  public async verifyUser(type: UserLoginType, user: Partial<User>) {
     const provider = this.gateway.getAuthenticationProvider<User>(type);
     return await provider.verify(user);
   }

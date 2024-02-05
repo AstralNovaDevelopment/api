@@ -11,6 +11,8 @@ import * as passport from 'passport';
 import RedisStore from 'connect-redis';
 import MicroservicesModule from './microservices/microservice.module';
 import RedisService from './microservices/redis.microservice';
+import { APP_GUARD } from '@nestjs/core';
+import RoleGuard from './authentication/guards/role.guard';
 
 
 @Module({

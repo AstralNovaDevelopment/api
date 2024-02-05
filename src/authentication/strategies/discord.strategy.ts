@@ -27,7 +27,7 @@ export default class DiscordStrategy extends PassportStrategy(
     profile: Profile,
   ) {
     const token = await this.auth.generateToken({ sub: profile.id, type: "DISCORD" })
-    const data: User = { 
+    const data: Partial<User> = { 
       tokenId: token.id,
       type: "DISCORD",
       avatar: profile.avatar
