@@ -1,7 +1,17 @@
 
 # AstralNova API
 
+## API Reference
 
+#### Get user info
+
+```http
+  GET /api/discord/@me
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `api_key` | `string` | **Required**. Your API key |
 
 
 ## Run Locally
