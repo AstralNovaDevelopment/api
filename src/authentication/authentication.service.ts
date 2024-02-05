@@ -1,33 +1,8 @@
-import {  Inject, Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthenticationGateway, DiscordAuthenticationGateway, JWTAuthenticationGateway, Payload } from './authentication.gateway';
-import { PrismaService } from 'src/microservices/database.microservice';
+import {  Inject, Injectable } from '@nestjs/common';
+import AuthenticationGateway from './gateways/authentication.gateway';
 import {  User, UserLoginType } from '@prisma/client';
-import RedisService from 'src/microservices/redis.microservice';
-import { JwtService } from '@nestjs/jwt';
-
-@Injectable()
-export class GatewayContainer {
-  private authenticationGateways: Record<string, AuthenticationGateway> = {};
-  constructor(@Inject(PrismaService) prisma: PrismaService, @Inject(RedisService) redis: RedisService, @Inject(JwtService) jwt: JwtService) {
-    this.registerAuthenticationGateway("DISCORD", new DiscordAuthenticationGateway(prisma))
-    this.registerAuthenticationGateway("JWT", new JWTAuthenticationGateway(jwt, redis, prisma))
-  }
-  
-  public registerAuthenticationGateway(type: UserLoginType, gateway: AuthenticationGateway) {
-    this.authenticationGateways[type] = gateway;
-    return this;
-  }
-
-  public getJWTAuthenticationGateway() {
-    return this.getAuthenticationProvider<JWTAuthenticationGateway>("JWT")
-  }
-
-  public getAuthenticationProvider<T extends AuthenticationGateway>(type: UserLoginType): T {
-    const provider = this.authenticationGateways[type] as T;
-    if (!provider) throw new UnauthorizedException('Unsupported Authentication provider');
-    return provider;
-  }
-}
+import GatewayContainer from './gateways/GatewayContainer';
+import { Payload } from './gateways/JWTAuthenticationGateway';
 
 @Injectable()
 export default class AuthenticationService {
