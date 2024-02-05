@@ -33,17 +33,28 @@ Start the server
 
 ## Environment Variables
 
-To run this project, you will need to add the following environment variables to your .env file
+To run this project, you will need to add the following environment variables to your .env.example file and rename to .env file
 
 - `DISCORD_CLIENT_SECRET`
 
 - `DISCORD_CLIENT_ID`
 
-- `DATABASE_URL`
-
 - `SESSION_SECRET`
 
 - `DISCORD_CALLBACK_URL`
+
+- `REDIS_CACHE_PORT`
+
+- `DATABASE_PORT`
+
+- `DATABASE_ADDRESS`
+
+- `POSTGRES_USER`
+
+- `POSTGRES_PASSWORD`
+
+- `POSTGRES_DB`
+
 ## Roadmap
 
 [Coming Soon]
