@@ -2,7 +2,7 @@ import { Injectable, CanActivate, Inject, ExecutionContext, UnauthorizedExceptio
 import AuthenticationService from "../authentication.service";
 import { Request } from "express"
 @Injectable()
-export default class ValidateJWTCodeGuard implements CanActivate {
+export default class JWTCodeGuard implements CanActivate {
   constructor(@Inject(AuthenticationService) private auth: AuthenticationService) {}
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();

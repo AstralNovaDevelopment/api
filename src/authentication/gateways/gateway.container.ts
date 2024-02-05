@@ -3,9 +3,9 @@ import { JwtService } from "@nestjs/jwt";
 import { UserLoginType } from "@prisma/client";
 import { PrismaService } from "src/microservices/database.microservice";
 import RedisService from "src/microservices/redis.microservice";
-import AuthenticationGateway from "./authentication.gateway";
+import AuthenticationGateway from "./abstract.gateway";
 import DiscordAuthenticationGateway from "./discord.gateway";
-import JWTAuthenticationGateway from "./JWTAuthenticationGateway";
+import JWTAuthenticationGateway from "./jwt.gateway";
 
 @Injectable()
 export default class GatewayContainer {

@@ -1,6 +1,6 @@
 import { User } from "@prisma/client";
 import { PrismaService } from "src/microservices/database.microservice";
-import AuthenticationGateway from "./authentication.gateway";
+import AuthenticationGateway from "./abstract.gateway";
 
 export default class DiscordAuthenticationGateway extends AuthenticationGateway<User> {
   constructor(public prisma: PrismaService) {

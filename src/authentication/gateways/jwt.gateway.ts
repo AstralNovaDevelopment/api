@@ -3,7 +3,7 @@ import { JwtService } from "@nestjs/jwt"
 import { UserLoginType } from "@prisma/client"
 import { PrismaService } from "src/microservices/database.microservice"
 import RedisService from "src/microservices/redis.microservice"
-import AuthenticationGateway from "./authentication.gateway"
+import AuthenticationGateway from "./abstract.gateway"
 
 export interface Token {
   id: string,

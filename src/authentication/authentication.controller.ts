@@ -10,10 +10,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import AuthenticationService from './authentication.service';
-import DiscordGuard from './guards/DiscordGuard';
+import DiscordGuard from './guards/discord.guard';
 import { Request, Response } from 'express';
-import AuthenticatedGuard from './guards/AuthenticatedGuard';
-import ValidateJWTCodeGuard from './guards/validateJWTCodeGuard';
+import AuthenticatedGuard from './guards/authenticated.guard';
+import JWTCodeGuard from './guards/jwtCode.guard';
 
 @Controller('/api/authentication')
 export default class AuthenticationController {
@@ -45,13 +45,13 @@ export default class AuthenticationController {
   }
 
   @Post('/token')
-  @UseGuards(ValidateJWTCodeGuard)
+  @UseGuards(JWTCodeGuard)
   public async getToken(@Body() body: Record<string, string>) {
     return this.auth.getToken(body.code)
   }
 
   @Post("/token/revoke")
-  @UseGuards(ValidateJWTCodeGuard)
+  @UseGuards(JWTCodeGuard)
   public async revokeToken(@Body() body: Record<string, string>) {
     return this.auth.revokeToken(body.code)
   }
