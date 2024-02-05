@@ -6,7 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import MicroservicesModule from 'src/microservices/microservice.module';
 import { SessionSerializer } from './strategies/SessionSerializer';
-import { JwtStrategy } from './strategies/JwtStrategy';
+import JwtStrategy from './strategies/JwtStrategy';
 import GatewayContainer from './gateways/gatewayContainer';
 
 @Module({
@@ -22,7 +22,7 @@ import GatewayContainer from './gateways/gatewayContainer';
   ],
   controllers: [AuthenticationController],
   providers: [AuthenticationService, DiscordStrategy, JwtStrategy, SessionSerializer, GatewayContainer],
-  exports: [AuthenticationService, GatewayContainer],
+  exports: [AuthenticationService]
 })
 export class AuthenticationModule {}
 

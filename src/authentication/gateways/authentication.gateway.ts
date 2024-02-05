@@ -6,4 +6,6 @@ export default abstract class AuthenticationGateway<T = any> {
   public abstract create(context: unknown): Promise<T>;
 
   public abstract update(id: string, data: Partial<T>): Promise<T>;
+
+  public abstract delete(id: string): Promise<boolean> | boolean;
 }

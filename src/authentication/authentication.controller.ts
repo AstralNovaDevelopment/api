@@ -13,8 +13,7 @@ import AuthenticationService from './authentication.service';
 import DiscordGuard from './guards/DiscordGuard';
 import { Request, Response } from 'express';
 import AuthenticatedGuard from './guards/AuthenticatedGuard';
-import { ValidateJWTCodeGuard } from './guards/JWTGuard';
-
+import ValidateJWTCodeGuard from './guards/validateJWTCodeGuard';
 
 @Controller('/api/authentication')
 export default class AuthenticationController {
@@ -29,6 +28,12 @@ export default class AuthenticationController {
   @UseGuards(DiscordGuard)
   @Get('/discord/authorize')
   public async getAuth(@Res() res: Response, @Req() req: Request) {
+    return res.redirect('/api/authentication/oauth2/authorized')
+  }
+
+  @UseGuards(AuthenticatedGuard)
+  @Get("/oauth2/authorized")
+  public authorized(@Res() res: Response, @Req() req: Request) {
     return res.redirect(`zenflow://auth?code=${req.user["tokenId"]}`)
   }
 

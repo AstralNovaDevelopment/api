@@ -1,11 +1,9 @@
-import { Injectable, Inject } from "@nestjs/common";
 import { User } from "@prisma/client";
 import { PrismaService } from "src/microservices/database.microservice";
 import AuthenticationGateway from "./authentication.gateway";
 
-@Injectable()
 export default class DiscordAuthenticationGateway extends AuthenticationGateway<User> {
-  constructor(@Inject(PrismaService) public prisma: PrismaService) {
+  constructor(public prisma: PrismaService) {
     super()
   }
   public async verify(context: User): Promise<User> {
@@ -23,5 +21,12 @@ export default class DiscordAuthenticationGateway extends AuthenticationGateway<
     const user = await this.get(id);
     const newdata = Object.assign(user, data);
     return await this.prisma.user.update({ data: newdata, where: { id } })
+  }
+
+  public async delete(id: string) {
+    const user = this.get(id)
+    if(!user) return false;
+    await this.prisma.user.delete({ where: { id }})
+    return true;
   }
 }

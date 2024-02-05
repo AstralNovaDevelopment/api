@@ -16,7 +16,6 @@ import RedisService from './microservices/redis.microservice';
 @Module({
   imports: [
     DiscordModule,
-    AuthenticationModule,
     {
       module: MicroservicesModule,
       providers: [MicroservicesModule],
@@ -28,6 +27,7 @@ import RedisService from './microservices/redis.microservice';
       validate: (config) => validateEnvironmentSchema.parse(config),
     }),
     PassportModule.register({ session: true }),
+    AuthenticationModule,
   ],
   controllers: [],
   providers: []

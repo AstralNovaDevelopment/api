@@ -1,4 +1,4 @@
-import { Injectable, Logger } from "@nestjs/common"
+import { Logger } from "@nestjs/common"
 import { JwtService } from "@nestjs/jwt"
 import { UserLoginType } from "@prisma/client"
 import { PrismaService } from "src/microservices/database.microservice"
@@ -6,18 +6,17 @@ import RedisService from "src/microservices/redis.microservice"
 import AuthenticationGateway from "./authentication.gateway"
 
 export interface Token {
-    id: string,
-    access: string,
-    refresh: string
-    expiresIn: number,
-  }
+  id: string,
+  access: string,
+  refresh: string
+  expiresIn: number,
+}
   
-  export interface Payload {
-    sub: string,
-    type: UserLoginType
-  }
-  
-@Injectable()
+export interface Payload {
+  sub: string,
+  type: UserLoginType
+}
+
 export default class JWTAuthenticationGateway extends AuthenticationGateway<Token> {
   private ACCESS_EXPIRE_IN: number = 172800000
   private REFRESH_EXPIRE_IN: number = 604800000
@@ -27,14 +26,14 @@ export default class JWTAuthenticationGateway extends AuthenticationGateway<Toke
     this.init()
   }
 
-  public async init() {
+  private async init() {
     for(const user of await this.prisma.user.findMany({ })) {
       const item = await this.redis.get<Token>(user.tokenId);
       if(item) this.store.set(item.id, item)
     }
   }
 
-  public async revoke(token: string) {
+  public async delete(token: string) {
     const content = await this.get(token)
     if(!content) return false
     await this.redis.getClient().del(content.id)
@@ -70,7 +69,7 @@ export default class JWTAuthenticationGateway extends AuthenticationGateway<Toke
       expiresIn: this.REFRESH_EXPIRE_IN,
     }
     const previousToken = await this.prisma.user.findUnique({ where: { id: context.sub }})
-    if(previousToken && previousToken.tokenId) await this.revoke(previousToken.tokenId);
+    if(previousToken && previousToken.tokenId) await this.delete(previousToken.tokenId);
     this.redis.set(token.id, token, this.REFRESH_EXPIRE_IN)
     this.store.set(token.id, token)
     return token;

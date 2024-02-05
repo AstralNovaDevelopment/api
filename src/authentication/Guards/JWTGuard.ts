@@ -1,34 +1,17 @@
-import {  CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import {  ExecutionContext, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { Request } from "express";
 import  { AuthGuard } from "@nestjs/passport"
-import GatewayContainer  from "../gateways/gatewayContainer";
+import AuthenticationService from "../authentication.service";
 
 @Injectable()
-export class ValidateJWTCodeGuard implements CanActivate {
-  constructor(@Inject(GatewayContainer) private gateway: GatewayContainer) {}
-  public async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request: Request = context.switchToHttp().getRequest();
-    const code = this.extractTokenFromBody(request)
-    const  gateway = this.gateway.getJWTAuthenticationGateway()
-    const data = await gateway.get(code)
-    if(!data) throw new UnauthorizedException()
-    return true;
-  }
-  private extractTokenFromBody(request: Request): string | undefined {
-    const code = request.body.code
-    return code !== null ? code : undefined;
-  }
-}
-@Injectable()
-export class JwtAuthGuard extends AuthGuard('jwt') {
-  constructor(@Inject(GatewayContainer) public gateway: GatewayContainer) {
+export default class JwtAuthGuard extends AuthGuard('jwt') {
+  constructor(@Inject(AuthenticationService) private auth: AuthenticationService) {
     super()
   }
   public async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     const result = (await super.canActivate(context)) as boolean;
-    const gateway = this.gateway.getJWTAuthenticationGateway()
-    const verify = await gateway.verify(this.extractTokenFromHeader(request))
+    const verify = await this.auth.verifyToken(this.extractTokenFromHeader(request))
     if(!verify) throw new UnauthorizedException()
     await super.logIn(request);
     return result;
