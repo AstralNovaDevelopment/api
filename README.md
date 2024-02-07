@@ -5,7 +5,7 @@
 
 #### Get user info
 
-```http
+```https
   GET /api/discord/@me
 ```
 
