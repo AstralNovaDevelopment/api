@@ -26,10 +26,11 @@ export default class DiscordStrategy extends PassportStrategy(
     refreshToken: string,
     profile: Profile,
   ) {
-    const token = await this.auth.generateToken({ sub: profile.id, type: "DISCORD" })
+    const [token, user] = await Promise.all([this.auth.generateToken({ sub: profile.id, type: "DISCORD" }), this.auth.getUser("DISCORD", profile.id)])
     const data: Partial<User> = { 
       tokenId: token.id,
       type: "DISCORD",
+      role: user ? user.role : "MEMBER",
       avatar: profile.avatar
         ? `https://cdn.discordapp.com/avatars/${profile.id}/${profile.avatar}.webp?size=512`
         : 'https://cdn.discordapp.com/embed/avatars/0.png',
