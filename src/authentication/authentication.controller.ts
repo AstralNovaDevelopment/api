@@ -34,8 +34,7 @@ export default class AuthenticationController {
   @UseGuards(AuthenticatedGuard)
   @Get("/oauth2/authorized")
   public authorized(@Res() res: Response, @Req() req: Request) {
-    return res.redirect("/api/discord/@me")
-    //return res.redirect(`zenflow://auth?code=${req.user["tokenId"]}`)
+    return res.redirect(`zenflow://auth?code=${req.user["tokenId"]}`)
   }
 
   @UseGuards(AuthenticatedGuard)
