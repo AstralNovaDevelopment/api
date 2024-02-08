@@ -27,20 +27,22 @@ export default class AuthenticationController {
 
   @UseGuards(DiscordGuard)
   @Get('/discord/authorize')
-  public async getAuth(@Res() res: Response, @Req() req: Request) {
+  public async getAuth(@Res() res: Response) {
     return res.redirect('/api/authentication/oauth2/authorized')
   }
 
   @UseGuards(AuthenticatedGuard)
   @Get("/oauth2/authorized")
   public authorized(@Res() res: Response, @Req() req: Request) {
-    return res.redirect(`zenflow://auth?code=${req.user["tokenId"]}`)
+    return res.redirect("/api/discord/@me")
+    //return res.redirect(`zenflow://auth?code=${req.user["tokenId"]}`)
   }
 
   @UseGuards(AuthenticatedGuard)
   @Get("/logout")
-  public async logout(@Req() req: Request, res: Response) {
-    req.logOut({ keepSessionInfo: false }, (err) => Logger.error(err))
+  public async logout(@Req() req: Request, @Res() res: Response) {
+    await this.auth.revokeToken(req.user["tokenId"])
+    req.logOut({ keepSessionInfo: false }, (err) => err && Logger.error(err))
     return res.status(200).json({ status: 200, message: "success" })
   }
 

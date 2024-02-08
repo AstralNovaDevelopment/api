@@ -2,7 +2,7 @@ import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { Request } from 'express';
 import AuthenticatedGuard from '../authentication/guards/authenticated.guard';
-import JwtAuthGuard from '../authentication/guards/jwt.guard';
+import JwtAuthGuard from 'src/authentication/guards/jwt.guard';
 @Controller('/api/discord')
 export default class DiscordController {
   @UseGuards(JwtAuthGuard, AuthenticatedGuard)
