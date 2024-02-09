@@ -3,9 +3,10 @@ import { User } from '@prisma/client';
 import { Request } from 'express';
 import AuthenticatedGuard from '../authentication/guards/authenticated.guard';
 import JwtAuthGuard from 'src/authentication/guards/jwt.guard';
+import JWTCodeGuard from 'src/authentication/guards/jwtCode.guard';
 @Controller('/api/discord')
 export default class DiscordController {
-  @UseGuards(JwtAuthGuard, AuthenticatedGuard)
+  @UseGuards(JWTCodeGuard, JwtAuthGuard, AuthenticatedGuard)
   @Get('/@me')
   public async me(@Req() req: Request) {
     const user = req.user as Omit<User, "tokenId">;
