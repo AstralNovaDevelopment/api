@@ -42,7 +42,9 @@ export default class JWTAuthenticationGateway extends AuthenticationGateway<Toke
 
   public async verify(token: string) {
     try {
-      return await this.jwt.verifyAsync(token);
+      const resolver = await this.get(token)
+      if(!resolver) return false;
+      return await this.jwt.verifyAsync(resolver.access);
     } catch (error) {
       Logger.error(error)
       this.delete(token)
@@ -50,7 +52,7 @@ export default class JWTAuthenticationGateway extends AuthenticationGateway<Toke
     }
   }
   public async get(id: string): Promise<Token> {
-    const token = [...this.store.values()].find(k => k.access === id || k.id === id|| k.refresh === id) ?? await this.redis.get<Token>(id)
+    const token = [...this.store.values()].find(k => k.access === id || k.refresh === id) || await this.redis.get<Token>(id)
     if(!token) null
     return token;
   }
