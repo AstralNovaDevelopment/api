@@ -1,4 +1,4 @@
-import { Injectable, CanActivate, Inject, ExecutionContext, UnauthorizedException, BadRequestException } from "@nestjs/common";
+import { Injectable, CanActivate, Inject, ExecutionContext, BadRequestException } from "@nestjs/common";
 import AuthenticationService from "../authentication.service";
 import { Request } from "express"
 @Injectable()
@@ -8,8 +8,6 @@ export default class JWTCodeGuard implements CanActivate {
     const request: Request = context.switchToHttp().getRequest();
     const code = this.extractTokenFromBody(request)
     if(!code) throw new BadRequestException()
-    const data = this.auth.getToken(code)
-    if(!data) throw new UnauthorizedException()
     return true;
   }
   private extractTokenFromBody(request: Request): string | undefined {

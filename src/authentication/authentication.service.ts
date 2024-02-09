@@ -33,7 +33,7 @@ export default class AuthenticationService {
 
   public async getToken(code: string) {
     const provider = this.gateway.getAuthenticationProvider<Token>("JWT")
-    return provider.get(code)
+    return await provider.get(code)
   }
   public async generateToken(payload: Payload) {
     const provider = this.gateway.getAuthenticationProvider<Token>("JWT")

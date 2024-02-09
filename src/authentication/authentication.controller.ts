@@ -7,6 +7,7 @@ import {
   Post,
   Req,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import AuthenticationService from './authentication.service';
@@ -48,7 +49,9 @@ export default class AuthenticationController {
   @Post('/token')
   @UseGuards(JWTCodeGuard)
   public async getToken(@Body() body: Record<string, string>) {
-    return this.auth.getToken(body.code)
+    const token = await this.auth.getToken(body.code)
+    if(!token) throw new UnauthorizedException()
+    return token;
   }
 
   @Post("/token/revoke")

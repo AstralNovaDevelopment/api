@@ -42,7 +42,7 @@ export default class JWTAuthenticationGateway extends AuthenticationGateway<Toke
 
   public async verify(token: string) {
     try {
-      await this.jwt.verifyAsync(token);
+      return await this.jwt.verifyAsync(token);
     } catch (error) {
       Logger.error(error)
       this.delete(token)

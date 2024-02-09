@@ -8,7 +8,8 @@ export default class DiscordController {
   @UseGuards(JwtAuthGuard, AuthenticatedGuard)
   @Get('/@me')
   public async me(@Req() req: Request) {
-    const user = req.user as User;
+    const user = req.user as Omit<User, "tokenId">;
+    console.log(user)
     return {
       type: user.type, 
       id: user.id,
