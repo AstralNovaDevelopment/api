@@ -50,7 +50,7 @@ export default class JWTAuthenticationGateway extends AuthenticationGateway<Toke
     }
   }
   public async get(id: string): Promise<Token> {
-    const token = [...this.store.values()].find(k => k.id === id ?? k.access === id ?? k.refresh === id) || await this.redis.get<Token>(id)
+    const token = [...this.store.values()].find(k => k.access === id || k.id === id|| k.refresh === id) ?? await this.redis.get<Token>(id)
     if(!token) null
     return token;
   }

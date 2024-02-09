@@ -1,4 +1,4 @@
-import {  ExecutionContext, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
+import {  BadRequestException, ExecutionContext, ForbiddenException, Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { Request } from "express";
 import  { AuthGuard } from "@nestjs/passport"
 import AuthenticationService from "../authentication.service";
@@ -11,8 +11,10 @@ export default class JwtAuthGuard extends AuthGuard('jwt') {
   public async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
     const result = (await super.canActivate(context)) as boolean;
+    const token = await this.auth.getToken(this.extractTokenFromHeader(request))
+    if (!token) throw new BadRequestException("No token found in the request body or the token could not be processed.");    
     const verify = await this.auth.verifyToken(this.extractTokenFromHeader(request))
-    if(!verify) throw new UnauthorizedException()
+    if(!verify) throw new ForbiddenException()
     await super.logIn(request);
     return result;
   }

@@ -6,8 +6,8 @@ export default class JWTCodeGuard implements CanActivate {
   constructor(@Inject(AuthenticationService) private auth: AuthenticationService) {}
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
-    const code = this.extractTokenFromBody(request)
-    if(!code) throw new BadRequestException()
+    const token = await this.auth.getToken(this.extractTokenFromBody(request));
+    if (!token) throw new BadRequestException("No token found in the request body or the token could not be processed.");    
     return true;
   }
   private extractTokenFromBody(request: Request): string | undefined {
