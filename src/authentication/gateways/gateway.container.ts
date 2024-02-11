@@ -20,10 +20,7 @@ export default class GatewayContainer {
     return this;
   }
 
-  public getAuthenticationProvider<T>(type: UserLoginType) {
-    return this.getProvider<AuthenticationGateway<T>>(type)
-  }
-  private getProvider<T extends AuthenticationGateway>(type: UserLoginType): T {
+  public getAuthenticationProvider<O = any, T extends AuthenticationGateway<O> = AuthenticationGateway<O>>(type: UserLoginType): T {
     const provider = this.authenticationGateways[type] as T;
     if (!provider) throw new UnauthorizedException('Unsupported Authentication provider');
     return provider;
