@@ -5,6 +5,7 @@ import {
   Inject,
   Logger,
   Post,
+  Query,
   Req,
   Res,
   UnauthorizedException,
@@ -18,6 +19,7 @@ import JWTCodeGuard from './guards/jwtCode.guard';
 
 @Controller('/api/authentication')
 export default class AuthenticationController {
+  private redirectURL = (token: string) => `/api/authentication/oauth2/authorized?code=${token}` as const;
   constructor(@Inject(AuthenticationService) private auth: AuthenticationService) {}
 
   @UseGuards(DiscordGuard)
@@ -28,14 +30,14 @@ export default class AuthenticationController {
 
   @UseGuards(DiscordGuard)
   @Get('/discord/authorize')
-  public async getAuth(@Res() res: Response) {
-    return res.redirect('/api/authentication/oauth2/authorized')
+  public async getAuth(@Res() res: Response, @Req() req: Request) {
+    return res.redirect(this.redirectURL(req.user['tokenId']))
   }
 
   @UseGuards(AuthenticatedGuard)
   @Get("/oauth2/authorized")
-  public authorized(@Res() res: Response, @Req() req: Request) {
-    return res.redirect(`zenflow://auth?code=${req.user["tokenId"]}`)
+  public authorized(@Res() res: Response, @Query() query: Record<string, string>) {
+    return res.redirect(`zenflow://auth?code=${query.code}`)
   }
 
   @UseGuards(AuthenticatedGuard)
@@ -49,8 +51,10 @@ export default class AuthenticationController {
   @Post('/token')
   @UseGuards(JWTCodeGuard)
   public async getToken(@Body() body: Record<string, string>) {
-    const token = await this.auth.getToken(body.code)
+    const once = this.auth.isValidCode(body.code);
+    const token = once && await this.auth.getToken(body.code)
     if(!token) throw new UnauthorizedException()
+    this.auth.deleteCode(token.id)
     return token;
   }
 

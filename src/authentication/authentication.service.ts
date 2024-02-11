@@ -1,7 +1,7 @@
 import {  Inject, Injectable } from '@nestjs/common';
 import {  User, UserLoginType } from '@prisma/client';
 import GatewayContainer from './gateways/gateway.container';
-import { Payload, Token } from './gateways/jwt.gateway';
+import JWTAuthenticationGateway, { Payload, Token } from './gateways/jwt.gateway';
 
 @Injectable()
 export default class AuthenticationService {
@@ -38,6 +38,16 @@ export default class AuthenticationService {
   public async generateToken(payload: Payload) {
     const provider = this.gateway.getAuthenticationProvider<Token>("JWT")
     return provider.create(payload)
+  }
+
+  public isValidCode(id: string) {
+    const provider = this.gateway.getAuthenticationProvider<Token, JWTAuthenticationGateway>("JWT")
+    return provider.validCode(id)
+  }
+
+  public deleteCode(id: string) {
+    const provider = this.gateway.getAuthenticationProvider<Token, JWTAuthenticationGateway>("JWT")
+    return provider.deleteCode(id)
   }
 }
 
