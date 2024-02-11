@@ -21,6 +21,7 @@ export default class JWTAuthenticationGateway extends AuthenticationGateway<Toke
   private ACCESS_EXPIRE_IN: number = 172800000
   private REFRESH_EXPIRE_IN: number = 604800000
   private store: Map<string, Token> = new Map()
+  private codes: Set<string> = new Set()
   constructor(private jwt: JwtService, private redis: RedisService, private prisma: PrismaService) {
     super()
     this.init()
@@ -29,14 +30,19 @@ export default class JWTAuthenticationGateway extends AuthenticationGateway<Toke
   private async init() {
     for(const user of await this.prisma.user.findMany({ })) {
       const item = await this.redis.get<Token>(user.tokenId);
-      if(item) this.store.set(item.id, item)
+      if(item) {
+        this.codes.add(item.id)
+        this.store.set(item.id, item)
+      }
     }
+  
   }
 
   public async delete(token: string) {
     const content = await this.get(token)
     if(!content) return false
     await this.redis.getClient().del(content.id)
+    this.deleteCode(content.id)
     return this.store.delete(content.id)
   }
 
@@ -72,6 +78,7 @@ export default class JWTAuthenticationGateway extends AuthenticationGateway<Toke
     if(previousToken && previousToken.tokenId) await this.delete(previousToken.tokenId);
     this.redis.set(token.id, token, this.REFRESH_EXPIRE_IN)
     this.store.set(token.id, token)
+    this.codes.add(token.id);
     return token;
   }
 
@@ -82,4 +89,12 @@ export default class JWTAuthenticationGateway extends AuthenticationGateway<Toke
     return options;
   }
 
+  public validCode(id: string) {
+    return this.codes.has(id)
+  }
+
+  public deleteCode(id: string) {
+   return this.codes.delete(id)
+
+  }
 }
