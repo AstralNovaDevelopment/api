@@ -40,7 +40,7 @@ export default class AuthenticationService {
     return provider.create(payload)
   }
 
-  public isValidCode(id: string) {
+  public validateCode(id: string) {
     const provider = this.gateway.getAuthenticationProvider<Token, JWTAuthenticationGateway>("JWT")
     return provider.validCode(id)
   }

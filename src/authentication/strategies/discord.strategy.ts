@@ -11,7 +11,7 @@ export default class DiscordStrategy extends PassportStrategy(
   'discord',
 ) {
   constructor(
-    @Inject(AuthenticationService) public auth: AuthenticationService,
+    @Inject(AuthenticationService)  private auth: AuthenticationService,
     @Inject(ConfigService) config: ConfigService<Record<string, any>, true>,
   ) {
     super({

@@ -51,7 +51,7 @@ export default class AuthenticationController {
   @Post('/token')
   @UseGuards(JWTCodeGuard)
   public async getToken(@Body() body: Record<string, string>) {
-    const once = this.auth.isValidCode(body.code);
+    const once = this.auth.validateCode(body.code);
     const token = once && await this.auth.getToken(body.code)
     if(!token) throw new UnauthorizedException()
     this.auth.deleteCode(token.id)
